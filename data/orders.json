@@ -1,0 +1,26 @@
+{
+  "nextOrderId": 2,
+  "orders": [
+    {
+      "id": 1,
+      "createdAt": "2025-12-06T09:43:08.324Z",
+      "status": "new",
+      "category": "线下执行+翻译",
+      "location": "札幌",
+      "preferredTime": "6",
+      "urgency": "normal",
+      "description": "你好",
+      "needInterpreter": true,
+      "budgetRange": "350",
+      "contactType": "phone",
+      "contactValue": "123456788",
+      "fromCountry": "日本",
+      "internal": {
+        "suggestedPrice": "",
+        "deposit": "",
+        "assignedHelperId": null,
+        "notes": ""
+      }
+    }
+  ]
+}

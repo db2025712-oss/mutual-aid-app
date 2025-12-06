@@ -1,0 +1,834 @@
+<!DOCTYPE html
+>
+<html lang="zh-CN"
+>
+<head
+>
+  <meta charset="UTF-8"
+ />
+  <title>互助会管理端 - 订单列表（含分享二维码）</title
+>
+  <meta name="viewport" content="width=device-width, initial-scale=1"
+ />
+  <style>
+    body
+ {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "思源黑体", "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei"
+, sans-serif;
+      margin: 0
+;
+      padding: 0
+;
+      background: #f3f4f6
+;
+    }
+    .wrapper
+ {
+      max-width: 960px
+;
+      margin: 0
+ auto;
+      padding: 16px
+;
+    }
+    h1
+ {
+      font-size: 20px
+;
+      margin: 0 0 8px
+;
+    }
+    .small
+ {
+      font-size: 12px
+;
+      color: #6b7280
+;
+    }
+    .toolbar
+ {
+      display
+: flex;
+      flex-wrap
+: wrap;
+      gap: 8px
+;
+      align-items
+: center;
+      margin: 12px 0
+;
+    }
+    select, 
+button, input[type="text"
+] {
+      font-size: 13px
+;
+      padding: 6px 10px
+;
+      border-radius: 8px
+;
+      border: 1px solid #d1d5db
+;
+      background: #ffffff
+;
+      box-sizing
+: border-box;
+    }
+    button
+ {
+      cursor
+: pointer;
+    }
+    button.primary
+ {
+      background: #2563eb
+;
+      color: #ffffff
+;
+      border-color: #2563eb
+;
+    }
+    table
+ {
+      width: 100%
+;
+      border-collapse
+: collapse;
+      font-size: 13px
+;
+      background: #ffffff
+;
+      border-radius: 12px
+;
+      overflow
+: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06
+);
+    }
+    thead
+ {
+      background: #f9fafb
+;
+    }
+    th, td
+ {
+      padding: 8px 10px
+;
+      border-bottom: 1px solid #e5e7eb
+;
+      vertical-align
+: top;
+    }
+    th
+ {
+      text-align
+: left;
+      font-weight: 600
+;
+      font-size: 12px
+;
+      color: #4b5563
+;
+    }
+    tr:last-child td
+ {
+      border-bottom
+: none;
+    }
+    .badge
+ {
+      display
+: inline-block;
+      padding: 2px 6px
+;
+      border-radius: 999px
+;
+      font-size: 11px
+;
+      background: #e5e7eb
+;
+      color: #374151
+;
+    }
+    .badge-new { background: #dbebff; color: #1d4ed8
+; }
+    .badge-quoted { background: #fef3c7; color: #92400e
+; }
+    .badge-assigned { background: #e0f2fe; color: #0369a1
+; }
+    .badge-in_progress { background: #dcfce7; color: #15803d
+; }
+    .badge-done { background: #e5e7eb; color: #374151
+; }
+    .badge-cancelled { background: #fee2e2; color: #b91c1c
+; }
+    .nowrap
+ {
+      white-space
+: nowrap;
+    }
+    .muted
+ {
+      color: #9ca3af
+;
+    }
+    .msg
+ {
+      margin-top: 8px
+;
+      font-size: 12px
+;
+    }
+    .msg.error
+ {
+      color: #b91c1c
+;
+    }
+    .msg.ok
+ {
+      color: #16a34a
+;
+    }
+    .note
+ {
+      font-size: 12px
+;
+      color: #6b7280
+;
+      margin-top: 4px
+;
+    }
+    .share-card
+ {
+      display
+: flex;
+      flex-wrap
+: wrap;
+      gap: 12px
+;
+      align-items
+: center;
+      background: #ffffff
+;
+      border-radius: 12px
+;
+      padding: 12px
+;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06
+);
+      margin-bottom: 12px
+;
+    }
+    .share-left
+ {
+      flex: 1 1 220px
+;
+      min-width: 220px
+;
+    }
+    .share-right
+ {
+      flex: 1 1 260px
+;
+      min-width: 260px
+;
+    }
+    .share-title
+ {
+      font-size: 14px
+;
+      font-weight: 600
+;
+      margin-bottom: 4px
+;
+    }
+    .share-input-row
+ {
+      display
+: flex;
+      gap: 8px
+;
+      margin-top: 6px
+;
+      margin-bottom: 6px
+;
+    }
+    #shareUrl
+ {
+      flex: 1
+;
+    }
+    #qrImage
+ {
+      width: 220px
+;
+      height: 220px
+;
+      border-radius: 16px
+;
+      background: #f9fafb
+;
+    }
+  </style
+>
+</head
+>
+<body
+>
+  <div class="wrapper"
+>
+    <h1>互助会管理端 · 订单列表</h1
+>
+    <p class="small"
+>
+      简易后台，只读查看。所有数据目前写在 
+<code>data/orders.json</code> 里，重启 <code>node server.js</code
+> 会自动读取。
+    </p
+>
+
+    <!-- 分享二维码区域 -->
+    <div class="share-card"
+>
+      <div class="share-left"
+>
+        <div class="share-title">分享给客户使用的二维码</div
+>
+        <p class="small"
+>
+          扫码后，会在手机浏览器里打开你填写的网址。客户可以在手机浏览器菜单里选择“添加到主屏幕”，等于把互助会装成一个图标。
+        </p
+>
+        <div class="share-input-row"
+>
+          <input
+            type="text"
+            id="shareUrl"
+            placeholder="填一个给客户使用的访问地址，比如以后部署好的 https://xxx.com"
+          />
+          <button id="updateQrBtn" class="primary">生成二维码</button
+>
+        </div
+>
+        <p class="note"
+>
+          现在本机测试阶段，如果你还没部署到公网，可以先手动填：
+<br
+ />
+          · 将来公网地址：比如 
+<code>https://mutual-aid.example.com</code><br
+ />
+          · 或者局域网地址：比如 
+<code>http://192.168.0.10:3000</code
+>（你电脑在家里 Wi-Fi 里的 IP）
+        </p
+>
+        <p class="note"
+>
+          客户端操作说明（大白话）：
+<br
+ />
+          · 用手机扫一扫这个二维码，在手机浏览器里打开互助会页面。
+<br
+ />
+          · 打开后，点击浏览器菜单（右上角） → 选“添加到主屏幕 / 安装应用”，桌面就会多一个图标，下次点图标就能直接进互助会。
+        </p
+>
+      </div
+>
+      <div class="share-right"
+>
+        <img id="qrImage" alt="互助会分享二维码"
+ />
+      </div
+>
+    </div
+>
+
+    <div class="toolbar"
+>
+      <label class="small"
+>
+        状态筛选：
+        <select id="statusFilter"
+>
+          <option value="">全部</option
+>
+          <option value="new">new（新提交）</option
+>
+          <option value="quoted">quoted（已报价）</option
+>
+          <option value="assigned">assigned（已分配）</option
+>
+          <option value="in_progress">in_progress（服务中）</option
+>
+          <option value="done">done（已完成）</option
+>
+          <option value="cancelled">cancelled（已取消）</option
+>
+        </select
+>
+      </label
+>
+      <button id="refreshBtn" class="primary">刷新列表</button
+>
+      <span class="small" id="countInfo"></span
+>
+    </div
+>
+
+    <table
+>
+      <thead
+>
+        <tr
+>
+          <th class="nowrap">ID</th
+>
+          <th class="nowrap">类别 / 状态</th
+>
+          <th>需求概要</th
+>
+          <th class="nowrap">时间&地区</th
+>
+          <th class="nowrap">联系方式</th
+>
+          <th class="nowrap">创建时间</th
+>
+        </tr
+>
+      </thead
+>
+      <tbody id="ordersBody"
+>
+        <tr
+>
+          <td colspan="6" class="muted">正在加载中……</td
+>
+        </tr
+>
+      </tbody
+>
+    </table
+>
+
+    <div id="msg" class="msg"></div
+>
+    <p class="note"
+>
+      提醒：这一版后台没有登录和修改功能，只用来让你快速看到有哪些新单。  
+      你可以在这里看到联系方式，然后自己去加微信/发邮件沟通后续报价。
+    </p
+>
+  </div
+>
+
+  <script>
+    (
+function (
+) {
+      // === 分享二维码相关 ===
+      var shareUrlInput = document.getElementById("shareUrl"
+);
+      var qrImage = document.getElementById("qrImage"
+);
+      var updateQrBtn = document.getElementById("updateQrBtn"
+);
+
+      function setDefaultShareUrl(
+) {
+        try
+ {
+          // 默认用当前页面所在的域名，去掉 /admin.html
+          var origin = window.location.origin || ""
+;
+          var defaultUrl = origin; // 将来你部署到公网后，可以在输入框里改成正式网址
+          shareUrlInput.
+value
+ = defaultUrl;
+          updateQrImage
+();
+        } 
+catch
+ (e) {
+          // 忽略
+        }
+      }
+
+      function updateQrImage(
+) {
+        var url = (shareUrlInput.value || "").trim
+();
+        if
+ (!url) {
+          qrImage.
+src = ""
+;
+          qrImage.
+alt = "请先填写要分享的访问地址"
+;
+          return
+;
+        }
+        // 使用公开二维码服务生成二维码图片
+        var encoded = encodeURIComponent
+(url);
+        var
+ qrUrl =
+          "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data="
+ +
+          encoded;
+        qrImage.
+src
+ = qrUrl;
+        qrImage.
+alt = "互助会分享二维码（" + url + "）"
+;
+      }
+
+      updateQrBtn.
+addEventListener("click", function (
+) {
+        updateQrImage
+();
+      });
+
+      // 页面加载时设置一个默认地址，并生成一次
+      setDefaultShareUrl
+();
+
+      // === 订单列表相关（沿用原来的逻辑） ===
+      function formatStatus(status
+) {
+        if (!status || status === "new") return "new（新提交）"
+;
+        if (status === "quoted") return "quoted（已报价）"
+;
+        if (status === "assigned") return "assigned（已分配）"
+;
+        if (status === "in_progress") return "in_progress（服务中）"
+;
+        if (status === "done") return "done（已完成）"
+;
+        if (status === "cancelled") return "cancelled（已取消）"
+;
+        return
+ status;
+      }
+
+      function statusClass(status
+) {
+        if (!status || status === "new") return "badge badge-new"
+;
+        if (status === "quoted") return "badge badge-quoted"
+;
+        if (status === "assigned") return "badge badge-assigned"
+;
+        if (status === "in_progress") return "badge badge-in_progress"
+;
+        if (status === "done") return "badge badge-done"
+;
+        if (status === "cancelled") return "badge badge-cancelled"
+;
+        return "badge"
+;
+      }
+
+      function shortText(text, len
+) {
+        if (!text) return ""
+;
+        if (text.length <= len) return
+ text;
+        return text.slice(0, len) + "…"
+;
+      }
+
+      function formatDate(iso
+) {
+        if (!iso) return ""
+;
+        try
+ {
+          var d = new Date
+(iso);
+          if (isNaN(d.getTime())) return
+ iso;
+          var y = d.getFullYear
+();
+          var m = String(d.getMonth() + 1).padStart(2, "0"
+);
+          var day = String(d.getDate()).padStart(2, "0"
+);
+          var hh = String(d.getHours()).padStart(2, "0"
+);
+          var mm = String(d.getMinutes()).padStart(2, "0"
+);
+          return y + "-" + m + "-" + day + " " + hh + ":"
+ + mm;
+        } 
+catch
+ (e) {
+          return
+ iso;
+        }
+      }
+
+      function renderOrders(orders
+) {
+        var tbody = document.getElementById("ordersBody"
+);
+        var countInfo = document.getElementById("countInfo"
+);
+
+        if (!orders || !orders.length
+) {
+          tbody.
+innerHTML
+ =
+            '<tr><td colspan="6" class="muted">目前没有符合条件的订单。</td></tr>'
+;
+          countInfo.
+textContent = "共 0 条"
+;
+          return
+;
+        }
+
+        var rows = ""
+;
+        for (var i = 0; i < orders.length
+; i++) {
+          var
+ o = orders[i] || {};
+          var desc = o.description || ""
+;
+          var shortDesc = shortText(desc.replace(/\s+/g, " "), 40
+);
+          var loc = o.location || ""
+;
+          var timeStr = o.preferredTime || ""
+;
+          var contact = (o.contactType || "") + ": " + (o.contactValue || ""
+);
+          contact = contact.
+trim
+();
+          var from = o.fromCountry ? "（" + o.fromCountry + "）" : ""
+;
+          var when = formatDate(o.createdAt
+);
+
+          rows +=
+            "<tr>"
+ +
+            '<td class="nowrap">'
+ +
+            (o.
+id || ""
+) +
+            "</td>"
+ +
+            "<td>"
+ +
+            "<div>"
+ +
+            (o.
+category || ""
+) +
+            "</div>"
+ +
+            '<div><span class="'
+ +
+            statusClass(o.status
+) +
+            '">'
+ +
+            formatStatus(o.status
+) +
+            "</span></div>"
+ +
+            "</td>"
+ +
+            "<td>"
+ +
+            "<div>"
+ +
+            (shortDesc || 
+'<span class="muted">（无详细描述）</span>'
+) +
+            "</div>"
+ +
+            "</td>"
+ +
+            "<td>"
+ +
+            "<div>"
+ +
+            (loc || 
+'<span class="muted">（未填写地区）</span>'
+) +
+            "</div>"
+ +
+            '<div class="muted">'
+ +
+            (timeStr || 
+""
+) +
+            "</div>"
+ +
+            "</td>"
+ +
+            "<td>"
+ +
+            "<div>"
+ +
+            (contact || 
+'<span class="muted">（未填写联系方式）</span>'
+) +
+            "</div>"
+ +
+            '<div class="muted">'
+ +
+            from
+ +
+            "</div>"
+ +
+            "</td>"
+ +
+            '<td class="nowrap">'
+ +
+            when +
+            "</td>"
+ +
+            "</tr>"
+;
+        }
+
+        tbody.
+innerHTML
+ = rows;
+        countInfo.
+textContent = "共 " + orders.length + " 条"
+;
+      }
+
+      function loadOrders(
+) {
+        var tbody = document.getElementById("ordersBody"
+);
+        var msg = document.getElementById("msg"
+);
+        var statusFilter = document.getElementById("statusFilter"
+);
+        var countInfo = document.getElementById("countInfo"
+);
+
+        msg.
+textContent = ""
+;
+        msg.
+className = "msg"
+;
+        tbody.
+innerHTML
+ =
+          '<tr><td colspan="6" class="muted">正在加载中……</td></tr>'
+;
+        countInfo.
+textContent = ""
+;
+
+        var status = statusFilter.value || ""
+;
+        var url = "/api/orders"
+;
+        if
+ (status) {
+          url += 
+"?status=" + encodeURIComponent
+(status);
+        }
+
+        fetch
+(url)
+          .
+then(function (resp
+) {
+            return resp.json
+();
+          })
+          .
+then(function (data
+) {
+            if (!data || !data.ok || !data.orders
+) {
+              var
+ m =
+                (data && data.
+message) || "服务器返回数据不正确。"
+;
+              msg.
+textContent
+ = m;
+              msg.
+className = "msg error"
+;
+              tbody.
+innerHTML
+ =
+                '<tr><td colspan="6" class="muted">暂时无法获取订单。</td></tr>'
+;
+              return
+;
+            }
+            renderOrders(data.orders
+);
+            msg.
+textContent = "加载完成。"
+;
+            msg.
+className = "msg ok"
+;
+          })
+          .
+catch(function (err
+) {
+            console.error
+(err);
+            msg.
+textContent = "网络或服务器异常，请稍后再试。"
+;
+            msg.
+className = "msg error"
+;
+            tbody.
+innerHTML
+ =
+              '<tr><td colspan="6" class="muted">暂时无法获取订单。</td></tr>'
+;
+          });
+      }
+
+      var refreshBtn = document.getElementById("refreshBtn"
+);
+      var statusFilter = document.getElementById("statusFilter"
+);
+
+      refreshBtn.
+addEventListener("click"
+, loadOrders);
+      statusFilter.
+addEventListener("change"
+, loadOrders);
+
+      // 页面打开时自动加载一次
+      loadOrders
+();
+    })();
+  </script
+>
+</body
+>
+</html
+>

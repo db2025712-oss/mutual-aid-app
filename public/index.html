@@ -1,0 +1,733 @@
+<!DOCTYPE html
+>
+<html lang="zh-CN"
+>
+<head
+>
+  <meta charset="UTF-8"
+ />
+  <title>在日华人互助会 - 小程序MVP</title
+>
+  <meta name="viewport" content="width=device-width, initial-scale=1"
+ />
+  <style>
+    body
+ {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "思源黑体", "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei"
+, sans-serif;
+      margin: 0
+;
+      padding: 0
+;
+      background: #f5f5f5
+;
+    }
+    .wrapper
+ {
+      max-width: 480px
+;
+      margin: 0
+ auto;
+      padding: 16px
+;
+    }
+    .card
+ {
+      background: #ffffff
+;
+      border-radius: 12px
+;
+      padding: 16px
+;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06
+);
+      margin-bottom: 16px
+;
+    }
+    h1
+ {
+      font-size: 20px
+;
+      margin: 0 0 8px
+;
+    }
+    h2
+ {
+      font-size: 16px
+;
+      margin: 16px 0 8px
+;
+    }
+    p
+ {
+      font-size: 14px
+;
+      line-height: 1.6
+;
+      margin: 4px 0
+;
+    }
+    .btn-group
+ {
+      display
+: grid;
+      grid-template-columns: 1fr 1
+fr;
+      gap: 8px
+;
+      margin-top: 8px
+;
+    }
+    .btn
+ {
+      display
+: inline-flex;
+      align-items
+: center;
+      justify-content
+: center;
+      padding: 10px 12px
+;
+      font-size: 14px
+;
+      border-radius: 999px
+;
+      border
+: none;
+      cursor
+: pointer;
+      background: #2563eb
+;
+      color: #ffffff
+;
+      text-decoration
+: none;
+      text-align
+: center;
+    }
+    .btn.secondary
+ {
+      background: #e5e7eb
+;
+      color: #111827
+;
+    }
+    .btn.full
+ {
+      grid-column: 1 / 3
+;
+    }
+    .badge
+ {
+      display
+: inline-block;
+      padding: 2px 8px
+;
+      border-radius: 999px
+;
+      font-size: 12px
+;
+      background: #fee2e2
+;
+      color: #b91c1c
+;
+      margin-top: 4px
+;
+    }
+    .footer
+ {
+      text-align
+: center;
+      font-size: 12px
+;
+      color: #6b7280
+;
+      margin-top: 12px
+;
+      margin-bottom: 12px
+;
+    }
+    .small
+ {
+      font-size: 12px
+;
+      color: #6b7280
+;
+    }
+
+    /* 弹出的下单表单 */
+    .overlay
+ {
+      position
+: fixed;
+      inset: 
+0
+;
+      background: rgba(0,0,0,0.4
+);
+      display
+: flex;
+      align-items
+: center;
+      justify-content
+: center;
+      z-index: 50
+;
+    }
+    .overlay.hidden
+ {
+      display
+: none;
+    }
+    .form-card
+ {
+      width: 100%
+;
+      max-width: 480px
+;
+      max-height: 90vh
+;
+      overflow-y
+: auto;
+      background: #ffffff
+;
+      border-radius: 16px
+;
+      padding: 16px 16px 12px
+;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15
+);
+    }
+    .form-row
+ {
+      margin-bottom: 10px
+;
+    }
+    .form-row label
+ {
+      display
+: block;
+      font-size: 13px
+;
+      margin-bottom: 4px
+;
+      font-weight: 600
+;
+    }
+    .form-row input[type="text"
+],
+    .form-row input[type="email"
+],
+    .form-row input[type="tel"
+],
+    .form-row textarea
+,
+    .form-row
+ select {
+      width: 100%
+;
+      box-sizing
+: border-box;
+      padding: 8px 10px
+;
+      border-radius: 8px
+;
+      border: 1px solid #d1d5db
+;
+      font-size: 14px
+;
+    }
+    .form-row textarea
+ {
+      min-height: 70px
+;
+      resize
+: vertical;
+    }
+    .radio-group
+ {
+      display
+: flex;
+      flex-wrap
+: wrap;
+      gap: 8px
+;
+      font-size: 13px
+;
+    }
+    .radio-group label
+ {
+      display
+: inline-flex;
+      align-items
+: center;
+      gap: 4px
+;
+      font-weight: 400
+;
+    }
+    .form-actions
+ {
+      display
+: flex;
+      justify-content
+: flex-end;
+      gap: 8px
+;
+      margin-top: 8px
+;
+    }
+    .btn.small
+ {
+      padding: 8px 10px
+;
+      font-size: 13px
+;
+    }
+    .btn.outline
+ {
+      background: #ffffff
+;
+      color: #111827
+;
+      border: 1px solid #d1d5db
+;
+    }
+    .message
+ {
+      font-size: 13px
+;
+      margin-top: 6px
+;
+    }
+    .message.ok
+ {
+      color: #16a34a
+;
+    }
+    .message.error
+ {
+      color: #b91c1c
+;
+    }
+  </style
+>
+</head
+>
+<body
+>
+  <div class="wrapper"
+>
+    <div class="card"
+>
+      <h1>在日华人互助会</h1
+>
+      <p>只接五类小单，只做清清楚楚的事。</p
+>
+      <p class="badge">MVP 测试版 · 功能逐步完善中</p
+>
+    </div
+>
+
+    <div class="card"
+>
+      <h2>选择需要的帮助类型</h2
+>
+      <p>点击下面其中一类，会弹出一个简单下单表单。信息会直接记录到服务器。</p
+>
+      <div class="btn-group"
+>
+        <button class="btn secondary" data-category="経管落地">经管签落地</button
+>
+        <button class="btn secondary" data-category="保健所/许可">保健所/许可协调</button
+>
+        <button class="btn secondary" data-category="落地陪同+跑腿">落地陪同+跑腿</button
+>
+        <button class="btn secondary" data-category="翻译+会议陪同">翻译+会议陪同</button
+>
+        <button class="btn secondary" data-category="线下执行+翻译">线下执行+翻译</button
+>
+        <button class="btn full" id="testServerBtn"
+>
+          测试服务器是否正常
+        </button
+>
+      </div
+>
+      <p class="small">说明：这一版只做信息收集和入库，真正报价和沟通依然是你人工联系。</p
+>
+    </div
+>
+
+    <div class="card"
+>
+      <h2>使用前说明（简版）</h2
+>
+      <p>· 我们不是律师（lawyer〔律师〕）、不是行政书士（行政手续代理人），只做跑腿、陪同、翻译的小件事。</p
+>
+      <p>· 所有服务会收取合理服务费和押金，详细说明会在正式版中单独页面写清楚。</p
+>
+      <p>· 目前为试运行版本，提交的需求会人工审核后再联系。</p
+>
+    </div
+>
+
+    <div class="footer"
+>
+      Mutual Aid Miniapp MVP · v0.2
+    </div
+>
+  </div
+>
+
+  <!-- 下单表单弹窗 -->
+  <div class="overlay hidden" id="orderOverlay"
+>
+    <div class="form-card"
+>
+      <h2 id="orderTitle">提交需求</h2
+>
+      <p class="small" id="orderSubtitle"></p
+>
+
+      <form id="orderForm"
+>
+        <div class="form-row"
+>
+          <label>你目前人在</label
+>
+          <div class="radio-group"
+>
+            <label><input type="radio" name="fromCountry" value="日本" checked />日本</label
+>
+            <label><input type="radio" name="fromCountry" value="中国">中国</label
+>
+            <label><input type="radio" name="fromCountry" value="其他">其他</label
+>
+          </div
+>
+        </div
+>
+
+        <div class="form-row"
+>
+          <label>办理城市/区域（例如：大阪市浪速区，靠近难波站）</label
+>
+          <input type="text" id="location" placeholder="写城市 + 区名 + 最近车站，大概描述一下范围"
+>
+        </div
+>
+
+        <div class="form-row"
+>
+          <label>希望办理时间</label
+>
+          <input type="text" id="preferredTime" placeholder="例如：本周五下午 / 下周一上午10点左右"
+>
+        </div
+>
+
+        <div class="form-row"
+>
+          <label>紧急程度</label
+>
+          <div class="radio-group"
+>
+            <label><input type="radio" name="urgency" value="normal" checked>一般</label
+>
+            <label><input type="radio" name="urgency" value="urgent">较急（3天内）</label
+>
+            <label><input type="radio" name="urgency" value="very_urgent">很急（24小时内）</label
+>
+          </div
+>
+        </div
+>
+
+        <div class="form-row"
+>
+          <label>简单说一下你需要我们帮什么忙</label
+>
+          <textarea id="description" placeholder="越具体越好，比如需要陪同去哪个窗口，大概要做哪些手续，手里有哪些材料等"></textarea
+>
+        </div
+>
+
+        <div class="form-row"
+>
+          <label
+>
+            <input type="checkbox" id="needInterpreter"
+ />
+            需要语言翻译一起（不只是带路）
+          </label
+>
+        </div
+>
+
+        <div class="form-row"
+>
+          <label>你心里大概的预算区间（总费用，服务费+交通，单位：日元）</label
+>
+          <input type="text" id="budgetRange" placeholder="例如：8000～12000 / 最多不超过15000"
+>
+        </div
+>
+
+        <div class="form-row"
+>
+          <label>联系方式</label
+>
+          <div class="radio-group" style="margin-bottom: 4px;"
+>
+            <label><input type="radio" name="contactType" value="wechat" checked>微信</label
+>
+            <label><input type="radio" name="contactType" value="line">LINE</label
+>
+            <label><input type="radio" name="contactType" value="email">邮箱</label
+>
+            <label><input type="radio" name="contactType" value="phone">手机号</label
+>
+          </div
+>
+          <input type="text" id="contactValue" placeholder="填写具体账号/邮箱/手机号，至少填一个（必填）"
+>
+        </div
+>
+
+        <div id="orderMessage" class="message"></div
+>
+
+        <div class="form-actions"
+>
+          <button type="button" class="btn small outline" id="cancelOrderBtn">取消</button
+>
+          <button type="submit" class="btn small">提交需求</button
+>
+        </div
+>
+      </form
+>
+    </div
+>
+  </div
+>
+
+  <script>
+    (
+function (
+) {
+      let selectedCategoryKey = ''
+;
+      let selectedCategoryName = ''
+;
+
+      const overlay = document.getElementById('orderOverlay'
+);
+      const orderTitle = document.getElementById('orderTitle'
+);
+      const orderSubtitle = document.getElementById('orderSubtitle'
+);
+      const orderForm = document.getElementById('orderForm'
+);
+      const orderMessage = document.getElementById('orderMessage'
+);
+      const cancelOrderBtn = document.getElementById('cancelOrderBtn'
+);
+
+      // 点击测试按钮，只弹出提示，证明前后端都在工作
+      const testBtn = document.getElementById('testServerBtn'
+);
+      if
+ (testBtn) {
+        testBtn.
+addEventListener('click', function (
+) {
+          alert('前端页面已加载，服务器也在运行。下一步就是通过表单把需求发到 /api/orders。'
+);
+        });
+      }
+
+      // 给每个服务类别按钮绑定事件
+      const categoryButtons = document.querySelectorAll('[data-category]'
+);
+      categoryButtons.
+forEach(function (btn
+) {
+        btn.
+addEventListener('click', function (
+) {
+          selectedCategoryKey = btn.
+getAttribute('data-category') || ''
+;
+          selectedCategoryName = btn.
+textContent.trim() || ''
+;
+
+          orderTitle.
+textContent = '提交需求：'
+ + selectedCategoryName;
+          orderSubtitle.
+textContent = '说明：这一单会被记录在互助会后台，你后续可以凭联系方式和我们沟通报价与安排。'
+;
+          orderMessage.
+textContent = ''
+;
+          orderMessage.
+className = 'message'
+;
+
+          // 打开弹窗
+          overlay.
+classList.remove('hidden'
+);
+        });
+      });
+
+      // 取消按钮：关闭弹窗
+      cancelOrderBtn.
+addEventListener('click', function (
+) {
+        overlay.
+classList.add('hidden'
+);
+      });
+
+      // 提交表单
+      orderForm.
+addEventListener('submit', async function (e
+) {
+        e.
+preventDefault
+();
+        orderMessage.
+textContent = ''
+;
+        orderMessage.
+className = 'message'
+;
+
+        const fromCountry = document.querySelector('input[name="fromCountry"]:checked')?.value || ''
+;
+        const location = document.getElementById('location').value.trim
+();
+        const preferredTime = document.getElementById('preferredTime').value.trim
+();
+        const urgency = document.querySelector('input[name="urgency"]:checked')?.value || 'normal'
+;
+        const description = document.getElementById('description').value.trim
+();
+        const needInterpreter = document.getElementById('needInterpreter').checked
+;
+        const budgetRange = document.getElementById('budgetRange').value.trim
+();
+        const contactType = document.querySelector('input[name="contactType"]:checked')?.value || 'wechat'
+;
+        const contactValue = document.getElementById('contactValue').value.trim
+();
+
+        if
+ (!contactValue) {
+          orderMessage.
+textContent = '请至少填写一个联系方式，这是必填项。'
+;
+          orderMessage.
+className = 'message error'
+;
+          return
+;
+        }
+
+        if
+ (!selectedCategoryKey) {
+          orderMessage.
+textContent = '请选择服务类别后再提交。'
+;
+          orderMessage.
+className = 'message error'
+;
+          return
+;
+        }
+
+        const
+ payload = {
+          category
+: selectedCategoryKey,
+          location,
+          preferredTime,
+          urgency,
+          description,
+          needInterpreter,
+          budgetRange,
+          contactType,
+          contactValue,
+          fromCountry
+        };
+
+        try
+ {
+          const resp = await fetch('/api/orders'
+, {
+            method: 'POST'
+,
+            headers
+: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify
+(payload)
+          });
+
+          const result = await resp.json().catch(() =>
+ ({}));
+
+          if (resp.ok && result && result.ok
+) {
+            orderMessage.
+textContent = '提交成功，工单编号：' + (result.order?.id ?? '（已记录）') + '。稍后由人工与你联系。'
+;
+            orderMessage.
+className = 'message ok'
+;
+            // 简单清空一下内容（联系方式保留，方便连着提几单）
+            document.getElementById('description').value = ''
+;
+            document.getElementById('preferredTime').value = ''
+;
+            document.getElementById('location').value = ''
+;
+            document.getElementById('budgetRange').value = ''
+;
+          } 
+else
+ {
+            const msg = (result && result.message) || '服务器返回错误，请稍后再试。'
+;
+            orderMessage.
+textContent
+ = msg;
+            orderMessage.
+className = 'message error'
+;
+          }
+        } 
+catch
+ (err) {
+          console.error
+(err);
+          orderMessage.
+textContent = '网络或服务器异常，请稍后再试。'
+;
+          orderMessage.
+className = 'message error'
+;
+        }
+      });
+    })();
+  </script
+>
+</body
+>
+</html
+>
